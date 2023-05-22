@@ -1,6 +1,6 @@
 <template>
 <ul v-for="itemlocation in itemlocations" :key="itemlocation.articulo_id">
-  <li>{{itemlocation.nombre}}: {{ itemlocation.cantidad }}</li>
+  <li>{{itemlocation.nombre}}: <a>{{ itemlocation.cantidad }}</a></li>
 </ul>
 </template>
 

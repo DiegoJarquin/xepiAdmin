@@ -25,13 +25,15 @@
       </td>
     </tr>
     <tr id="hide" v-if="location.detalle" :class="{'open-details': location.detalle, 'close-details': !location.detalle}">
-      <td colspan="2" style="padding-left: 3%; ">
+      <td colspan="1" style="padding-left: 3%; ">
         <ubicaciones-articulo :u_id="location.ubicacion_id" :key="location.ubicacion_id"/>
       </td>
-      <td colspan="2" style="padding-left: 3%; text-align: justify">
+      <td colspan="1" style="padding-left: 3%; text-align: justify">
         <agregar-inventario-ubicacion :articulos="items" :ubicacion_id="location.ubicacion_id" @hide="hideAdd"/>
       </td>
-
+      <td colspan="2" style="padding-left: 3%; ">
+        <ubicaciones-empleado :u_id="location.ubicacion_id" :key="location.ubicacion_id"/>
+      </td>
 
     </tr>
     </tbody>
@@ -54,10 +56,12 @@ import ArticuloUbicaciones from "@/components/articuloUbicaciones.vue";
 import AgregarInventarioUbicacion from "@/components/agregarInventarioUbicacion.vue";
 import agregarUbicacion from "@/components/agregarUbicacion.vue";
 import UbicacionesArticulo from "@/components/ubicacionesArticulo.vue";
+import UbicacionesEmpleado from "@/components/ubicacionesEmpleado.vue";
 
 export default {
   name: "ListaUbicaciones",
   components: {
+    UbicacionesEmpleado,
     UbicacionesArticulo,
     AgregarInventarioUbicacion,
     agregarUbicacion,
@@ -125,28 +129,8 @@ export default {
         console.log(err);
       }
     },
-    // async getArticuloUbicaciones(id){
-    //   try {
-    //     const response = await axios.get(`http://192.168.0.8:3000/articuloUbicacion?id=${id}`);
-    //
-    //     console.log(this.itemlocations.length);
-    //     for (let i = 0; i < response.data.articulosUbicacion.length; i++) {
-    //       this.itemlocations.push({
-    //         "id":id,
-    //         "arreglo":{
-    //           "nombre":response.data.articulosUbicacion[i].nombre,
-    //           "cantidad":response.data.articulosUbicacion[i].cantidad
-    //         }
-    //       });
-    //     }
-    //
-    //
-    //     console.log(this.itemlocations);
-    //
-    //   } catch (err){
-    //     console.log(err);
-    //   }
-    // },
+
+
     async deleteProducts(id){
 
       try {

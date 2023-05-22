@@ -6,6 +6,7 @@ import Index from './components/ListaInventario.vue'
 import Create from './components/AgregarInventario.vue'
 import Edit from './components/EditarInventario.vue'
 import Menu from './components/barraMenu.vue'
+import EditarEmpleado from "@/components/EditarEmpleado.vue";
 
 createApp().config.productionTip = false
 
@@ -33,6 +34,11 @@ const routes = [
         name: 'Edit',
         path: '/edit/:id',
         component: Edit,
+    },
+    {
+        name: 'EditEmpleado',
+        path: '/editempleado/:id',
+        component: EditarEmpleado,
     }
 ]
 

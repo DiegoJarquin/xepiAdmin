@@ -1,11 +1,11 @@
 <template>
 
-  <table id="table" >
+  <table id="tableloc" >
     <thead>
     <tr>
-      <th id="rowhead" class="has-text-centered" @click="sortLoc('ubicacion_id')">ID</th>
-      <th id="rowhead" class="has-text-centered" @click="sortLoc('nombre')">Nombre</th>
-      <th id="rowhead" class="has-text-centered" @click="sortLoc('direccion')">Cantidad</th>
+      <th id="rowhead" class="has-text-centered" >ID</th>
+      <th id="rowhead" class="has-text-centered">Nombre</th>
+      <th id="rowhead" class="has-text-centered" >Cantidad</th>
 
     </tr>
     </thead>
@@ -74,18 +74,17 @@ export default {
 {
   text-align: center;
   color: white;
-  background-color: #222222;
+  background-color: rgba(50, 119, 255, 0.44);
 
 
 }
-table {
-  border-collapse: collapse;
-}
+
 tr {
   border: solid;
   border-width: 1px 0;
 }
-#table {
+#tableloc {
+  border-collapse: collapse;
   alignment: top;
   border-style: hidden;
   font-size: 18px;

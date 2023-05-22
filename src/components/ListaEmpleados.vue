@@ -1,97 +1,120 @@
 <template>
   <div id="mainWindow">
-    <div id="barra">
-      <a id="barrabtn" style="margin: 3%" @click="activarInventario">Inventario</a>
-      <a id="barrabtn" style="margin: 3%" @click="activarUbicaciones">Ubicaciones</a>
-      <a id="barrabtn" style="margin: 3%" @click="activarEmpleados">Empleados</a>
+    <!--    <router-link :to="{ name: 'Create' }" class="button is-success mt-5">Agregar</router-link>-->
+    <a class="button is-danger is-small" @click="hide = !hide" id="btnHover" v-if="hide">Agregar Empleado</a>
+    <a class="button is-danger is-small" @click="hide = !hide" id="btnHover" v-if="!hide">Cancelar</a>
+    <br>
+    <table id="table" >
+      <thead>
+      <tr>
+        <th id="rowhead" class="has-text-centered" >DPI</th>
+        <th id="rowhead" class="has-text-centered" >Nombre(s)</th>
+        <th id="rowhead" class="has-text-centered" >Apellido(s)</th>
+        <th id="rowhead" class="has-text-centered" >Edad</th>
+        <th id="rowhead" class="has-text-centered" >Sueldo</th>
+        <th id="rowhead" class="has-text-centered">Acciones</th>
+      </tr>
+      </thead>
+      <tbody  v-for="(empleado, index) in empleados" :key="empleado.dpi" v-on:click="toggleDetails(index);">
+      <tr >
+        <td>{{ empleado.dpi }}</td>
+        <td>{{ empleado.nombres }}</td>
+        <td>{{ empleado.apellidos }}</td>
+        <td>{{ dateToAge(new Date(empleado.fecha_nacimiento)) }}</td>
+        <td>GTQ {{ empleado.sueldo }}</td>
+        <td class="has-text-centered">
+          <router-link
+              :to="{ name: 'EditEmpleado', params: { id: empleado.dpi } }"
+              class="button is-info is-small" id="btn">Editar</router-link>
+          <a class="button is-danger is-small" @click="deleteEmpleado(empleado.dpi)" id="btn">Eliminar</a>
+        </td>
+      </tr>
+
+      <tr id="hide" v-if="empleado.detalle" :class="{'open-details': empleado.detalle, 'close-details': !empleado.detalle}">
+        <td colspan="6">{{empleado.nombre}}</td>
+      </tr>
+
+      </tbody>
+    </table>
+
+
+    <div id="add" v-if="!hide">
+      <agregar-empleado @hide="hideAdd"></agregar-empleado>
     </div>
+    <br>
+    <br>
 
-<!--    <a class="button is-danger is-small" @click="hideLocation = !hideLocation" id="btnHover" v-if="mostrarUbicaciones && hideLocation">Agregar Ubicación</a>-->
-<!--    <a class="button is-danger is-small" @click="hideLocation = !hideLocation" id="btnHover" v-if="mostrarUbicaciones && !hideLocation">Cancelar</a>-->
-    <ListaInventario v-if="mostrarInventario"/>
-    <ListaUbicaciones v-if="mostrarUbicaciones"/>
-    <ListaEmpleados v-if="mostrarEmpleados"/>
 
-<!--    <div id="add" v-if="!hideLocation">-->
-<!--      <agregar-ubicacion @hide="hideAdd"/>-->
-<!--    </div>-->
+
   </div>
-
-
 </template>
 
 <script>
-import ListaInventario from "@/components/ListaInventario.vue";
-import ListaUbicaciones from "@/components/ListaUbicaciones.vue";
-import articuloUbicaciones from "@/components/articuloUbicaciones.vue";
-import agregarInventarioUbicacion from "@/components/agregarInventarioUbicacion.vue";
-import agregarUbicacion from "@/components/agregarUbicacion.vue";
-import editarInventario from "@/components/EditarInventario.vue";
-import ListaEmpleados from "@/components/ListaEmpleados.vue";
+import AgregarEmpleado from "@/components/agregarEmpleado.vue";
 import axios from "axios";
+
 export default {
-  name: "barraMenu",
-  components:{
-    ListaEmpleados,
-    ListaInventario,
-    ListaUbicaciones,
-    agregarInventarioUbicacion,
-    articuloUbicaciones,
-    agregarUbicacion,
-    editarInventario
-  },
+  name: "ListaEmpleados",
+  components: {AgregarEmpleado},
   data(){
     return{
-      mostrarInventario: false,
-      mostrarUbicaciones: false,
-      mostrarEmpleados: false,
-      hideLocation: true,
-
+      hide: true,
+      empleados: [],
     }
   },
-  methods: {
+  created() {
+    this.getEmpleados();
+
+  },
+
+  methods:{
+    toggleDetails(index) {
+      this.empleados[index].detalle = !this.empleados[index].detalle;
+    },
+
     hideAdd(val){
-      this.hideLocation = val
-      this.getArticulos()
-      this.getUbicaciones()
+      this.hide = val
+      this.getEmpleados()
     },
-    activarInventario () {
-      this.mostrarInventario = !this.mostrarInventario;
-    },
-    activarUbicaciones () {
-      this.mostrarUbicaciones = !this.mostrarUbicaciones;
-    },
-    activarEmpleados () {
-      this.mostrarEmpleados = !this.mostrarEmpleados;
-    },
-    async getArticulos(){
+
+    async getEmpleados(){
       try {
-        const response = await axios.get("http://192.168.0.8:3000/articulos");
-        this.items = response.data.articulos;
-        console.log(this.items);
+        const response = await axios.get("http://192.168.0.8:3000/empleados");
+        this.empleados = response.data.empleados;
+        console.log(this.empleados);
 
       } catch (err){
         console.log(err);
       }
     },
-    async getUbicaciones(){
-      try {
-        const response = await axios.get("http://192.168.0.8:3000/ubicaciones");
-        this.locations = response.data.ubicaciones;
+    async deleteEmpleado(id){
 
+      try {
+        await axios.delete(`http://192.168.0.8:3000/empleado?id=${id}`);
+        window.location.reload();
       } catch (err){
         console.log(err);
       }
     },
+
+    dateToAge(fecha_nac){
+      var dif_mes = Date.now() - fecha_nac.getTime();
+      var dif_edad = new Date(dif_mes);
+
+      var year = dif_edad.getUTCFullYear();
+      var edad = Math.abs(year - 1970);
+
+
+      return edad;
+    }
+
 
   }
-
-
-
 }
 </script>
 
 <style scoped>
+
 
 @media (max-width: 1280px) {
   #table {
@@ -271,24 +294,6 @@ td{
   transform: translateY(10%);
 }
 
-#barra{
-  overflow: hidden;
-  background-color: #333;
-  font-size: 16px;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-
-}
-#barrabtn{
-  overflow: hidden;
-  width: 15%;
-  height: 50px;
-}
-#barrabtn:hover{
-  background-color: hsla(219, 77%, 53%, 0.2);;
-}
 
 
 </style>
