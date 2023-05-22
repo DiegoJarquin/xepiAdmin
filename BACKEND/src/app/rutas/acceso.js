@@ -189,6 +189,28 @@ module.exports = (app) => {
 
   });
 
+  //obtener articulos por ubicacion
+  app.get("/ubicacionArticulo", ( req, res) => {
+
+    let uid = req.query.id;
+    console.log("trying to get store..."+uid);
+    let consulta = `SELECT * FROM articulos ar LEFT JOIN aviones av ON av.articulo_id = ar.aid LEFT JOIN ukulele uk ON uk.articulo_id = ar.aid LEFT JOIN rompecabezas r on ar.aid = r.articulo_id LEFT JOIN cuadros c on ar.aid = c.articulo_id LEFT JOIN ubicacion_articulo ua on ua.articulo_id = ar.aid WHERE ua.ubicacion_id = ${uid}`;
+
+    conn.query(consulta, (err, rows, cols)=>{
+      if(err){
+        res.status(400).json({status:0,mensaje:"Error en consulta, no hay informacion disponible"});
+      }else {
+        if(rows.length > 0){
+          res.json({status:1, ubicacionArticulos:rows});
+          console.log(rows);
+        } else {
+          res.status(204).json({status:0, mensaje: "No se encontro articulo en tienda"});
+        }
+
+      }
+    });
+
+  });
   //delete por articulo
   app.delete('/articulo', (req, res) => {
 
@@ -403,6 +425,130 @@ module.exports = (app) => {
       }
     });
 });
+
+  app.get("/empleadosUbicacion", ( req, res) => {
+
+    let uid = req.query.id;
+    let consulta = `SELECT * FROM ubicacion_empleado ue LEFT JOIN empleados e ON ue.dpi = e.dpi WHERE ue.ubicacion_id = ${uid}`;
+    console.log(consulta);
+    conn.query(consulta, (err, rows, cols) => {
+      if (err) {
+        res.status(400).json({status: 0, mensaje: "Error en consulta, no hay informacion disponible"});
+      } else {
+        if (rows.length > 0) {
+          res.json({status: 1, empleadosUbicacion: rows})
+        } else {
+
+          res.status(204).json({status: 0, mensaje: "No se encontro ubicacion"});
+        }
+
+      }
+    });
+  });
+  //agregar empleado
+  app.post("/empleado", (req,res) => {
+    // console.log((req.body.username));
+    let consulta = `INSERT INTO empleados(dpi,nombres,apellidos,fecha_nacimiento,sueldo,detalle) VALUES ('${req.body.dpi}','${req.body.nombres}','${req.body.apellidos}','${req.body.fecha_nacimiento}',${req.body.sueldo},${req.body.detalle})`;
+    console.log(consulta);
+    let agregado = ``;
+
+    conn.query(consulta, (err, rows, cols) => {
+      if(err){
+        res.status(500).json({status: 0, mensaje: "Error en base de datos"});
+      }else {
+        agregado = `INSERT INTO ubicacion_empleado(ubicacion_id,dpi) VALUES (${req.body.ubicacion},'${req.body.dpi}')`;
+        conn.end;
+        conn.query(agregado, (err, rows, cols) => {
+          if(err){
+            res.status(500).json({status: 0, mensaje: "Error en base de datos"});
+          }else {
+            res.status(200).json({status:1, mensaje: "Inserción de empleado satisfactorio"});
+          }
+        });
+
+      }
+    });
+  });
+
+  //actualizar empleado
+  app.put("/empleado", (req,res) => {
+    let dpi = req.query.id;
+
+    let consulta = `UPDATE empleados SET dpi ='${req.body.dpi}', nombres ='${req.body.nombres}', apellidos ='${req.body.apellidos}',fecha_nacimiento ='${req.body.fecha_nacimiento}', sueldo =${req.body.sueldo} WHERE dpi = ${dpi}`;
+    console.log(consulta);
+    let agregado = ``;
+    conn.query(consulta, (err, rows, cols) => {
+      if(err){
+        res.status(500).json({status: 0, mensaje: "Error en base de datos"});
+      }else {
+        agregado = `UPDATE ubicacion_empleado SET dpi ='${req.body.dpi}', ubicacion_id = ${req.body.ubicacion} WHERE dpi = ${dpi}`;
+        console.log(agregado);
+        conn.end;
+        conn.query(agregado, (err, rows, cols) => {
+          if(err){
+            res.status(500).json({status: 0, mensaje: "Error en base de datos"});
+          }else {
+            console.log("actualizacion exitosa");
+            res.status(200).json({status:1, mensaje: "Actualizacion de empleado satisfactorio"});
+          }
+        });
+      }
+    });
+  });
+
+  //listar empleados
+  app.get("/empleados", ( req, res) => {
+
+    let consulta = `SELECT * FROM empleados e LEFT JOIN ubicacion_empleado ue ON ue.dpi = e.dpi LEFT JOIN ubicaciones u ON u.ubicacion_id = ue.ubicacion_id`;
+    conn.query(consulta, (err, rows, cols)=>{
+      if(err){
+        res.status(400).json({status:0,mensaje:"Error en consulta, no hay informacion disponible"});
+      }else {
+        if(rows.length > 0){
+          res.json({status:1, empleados:rows})
+        } else {
+          res.status(204).json({status:0, mensaje: "No se encontro empleados"});
+        }
+
+      }
+    });
+
+  });
+
+  //obtener empleado por dpi
+  app.get("/empleado", ( req, res) => {
+
+    let dpi = req.query.id;
+    let consulta = `SELECT * FROM empleados e LEFT JOIN ubicacion_empleado ue ON ue.dpi = e.dpi WHERE e.dpi = ${dpi}`;
+    conn.query(consulta, (err, rows, cols)=>{
+      if(err){
+        res.status(400).json({status:0,mensaje:"Error en consulta, no hay informacion disponible"});
+      }else {
+        if(rows.length > 0){
+          res.json({status:1, empleado:rows})
+        } else {
+          res.status(204).json({status:0, mensaje: "No se encontro empleado"});
+        }
+
+      }
+    });
+
+  });
+
+  //eliminar empleado
+  app.delete('/empleado', (req, res) => {
+
+    let dpi = req.query.id;
+    let consulta = `DELETE e.*,ue.* FROM empleados e LEFT JOIN ubicacion_empleado ue ON ue.dpi = e.dpi WHERE e.dpi = ${dpi}`;
+    console.log(consulta);
+    conn.query(consulta, (err, rows) => {
+      if (err){
+        res.status(400).json({status: 0, mensaje: err});
+      }else {
+        res.json({status:1, mensaje: "exito al eliminar ubicacion"})
+      }
+    });
+  });
 
 }
 
