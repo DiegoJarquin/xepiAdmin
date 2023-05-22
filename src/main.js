@@ -5,6 +5,7 @@ import App from './App.vue'
 import Index from './components/ListaInventario.vue'
 import Create from './components/AgregarInventario.vue'
 import Edit from './components/EditarInventario.vue'
+import Menu from './components/barraMenu.vue'
 
 createApp().config.productionTip = false
 
@@ -12,8 +13,14 @@ import './assets/main.css'
 
 const routes = [
     {
-        name: 'Index',
+        name: 'Menu',
         path: '/',
+        component: Menu,
+
+    },
+    {
+        name: 'Index',
+        path: '/index',
         component: Index,
 
     },

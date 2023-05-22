@@ -50,44 +50,44 @@
 
 <!--    tabla de ubicaciones -->
 
-    <a class="button is-danger is-small" @click="hideLocation = !hideLocation" id="btnHover" v-if="hideLocation">Agregar Ubicación</a>
-    <a class="button is-danger is-small" @click="hideLocation = !hideLocation" id="btnHover" v-if="!hideLocation">Cancelar</a>
-    <table id="table" >
-      <thead>
-      <tr>
-        <th id="rowhead" class="has-text-centered" @click="sortLoc('ubicacion_id')">ID</th>
-        <th id="rowhead" class="has-text-centered" @click="sortLoc('nombre')">Nombre</th>
-        <th id="rowhead" class="has-text-centered" @click="sortLoc('direccion')">Dirección</th>
-        <th id="rowhead" class="has-text-centered">Acciones</th>
-      </tr>
-      </thead>
-      <tbody  v-for="(location, index) in locations" :key="index" v-on:dblclick="toggleDetailsLocation(index)" >
-      <tr >
-        <td>{{ location.ubicacion_id }}</td>
-        <td>{{ location.nombre }}</td>
-        <td>{{ location.direccion }}</td>
+<!--    <a class="button is-danger is-small" @click="hideLocation = !hideLocation" id="btnHover" v-if="hideLocation">Agregar Ubicación</a>-->
+<!--    <a class="button is-danger is-small" @click="hideLocation = !hideLocation" id="btnHover" v-if="!hideLocation">Cancelar</a>-->
+<!--    <table id="table" >-->
+<!--      <thead>-->
+<!--      <tr>-->
+<!--        <th id="rowhead" class="has-text-centered" @click="sortLoc('ubicacion_id')">ID</th>-->
+<!--        <th id="rowhead" class="has-text-centered" @click="sortLoc('nombre')">Nombre</th>-->
+<!--        <th id="rowhead" class="has-text-centered" @click="sortLoc('direccion')">Dirección</th>-->
+<!--        <th id="rowhead" class="has-text-centered">Acciones</th>-->
+<!--      </tr>-->
+<!--      </thead>-->
+<!--      <tbody  v-for="(location, index) in locations" :key="index" v-on:dblclick="toggleDetailsLocation(index)" >-->
+<!--      <tr >-->
+<!--        <td>{{ location.ubicacion_id }}</td>-->
+<!--        <td>{{ location.nombre }}</td>-->
+<!--        <td>{{ location.direccion }}</td>-->
 
-        <td class="has-text-centered">
-<!--          <router-link-->
-<!--              :to="{ name: 'Edit', params: { id: location.ubicacion_id } }"-->
-<!--              class="button is-info is-small" id="btn">Editar</router-link>-->
-          <a class="button is-danger is-small" @click="deleteLocation(location.ubicacion_id)" id="btn">Eliminar</a>
-        </td>
-      </tr>
-      <tr id="hide" v-if="location.detalle" :class="{'open-details': location.detalle, 'close-details': !location.detalle}">
-        <td colspan="4">
-          <agregar-inventario-ubicacion :articulos="items" :ubicacion_id="location.ubicacion_id" @hide="hideAdd"/>
-        </td>
-
-
-      </tr>
-      </tbody>
+<!--        <td class="has-text-centered">-->
+<!--&lt;!&ndash;          <router-link&ndash;&gt;-->
+<!--&lt;!&ndash;              :to="{ name: 'Edit', params: { id: location.ubicacion_id } }"&ndash;&gt;-->
+<!--&lt;!&ndash;              class="button is-info is-small" id="btn">Editar</router-link>&ndash;&gt;-->
+<!--          <a class="button is-danger is-small" @click="deleteLocation(location.ubicacion_id)" id="btn">Eliminar</a>-->
+<!--        </td>-->
+<!--      </tr>-->
+<!--      <tr id="hide" v-if="location.detalle" :class="{'open-details': location.detalle, 'close-details': !location.detalle}">-->
+<!--        <td colspan="4">-->
+<!--          <agregar-inventario-ubicacion :articulos="items" :ubicacion_id="location.ubicacion_id" @hide="hideAdd"/>-->
+<!--        </td>-->
 
 
-    </table>
-    <div id="add" v-if="!hideLocation">
-      <AgregarUbicacion @hide="hideAdd"></AgregarUbicacion>
-    </div>
+<!--      </tr>-->
+<!--      </tbody>-->
+
+
+<!--    </table>-->
+<!--    <div id="add" v-if="!hideLocation">-->
+<!--      <AgregarUbicacion @hide="hideAdd"></AgregarUbicacion>-->
+<!--    </div>-->
 
   </div>
 
